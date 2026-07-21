@@ -24,14 +24,74 @@
             bottom: 20px;
             left: 20px;
             font-size: 48px;
+            cursor: grab;
+            user-select: none;
+            transition: filter 0.1s;
+            display: inline-block;
+            transform-origin: center;
+        }
+
+        .heart:hover {
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5));
+        }
+
+        .heart:active {
+            cursor: grabbing;
         }
     </style>
 </head>
 <body>
-    <div class="heart">
-        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="#2563eb">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
-    </div>
+    <div class="heart">❤️</div>
+
+    <script>
+        const heart = document.querySelector('.heart');
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+        let rotation = 0;
+
+        heart.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = heart.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                heart.style.left = (e.clientX - offsetX) + 'px';
+                heart.style.top = (e.clientY - offsetY) + 'px';
+                heart.style.bottom = 'auto';
+                updateTransform();
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Rotate with arrow keys or scroll wheel
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') {
+                rotation -= 5;
+                updateTransform();
+                e.preventDefault();
+            } else if (e.key === 'ArrowRight') {
+                rotation += 5;
+                updateTransform();
+                e.preventDefault();
+            }
+        });
+
+        heart.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            rotation += (e.deltaY > 0 ? -5 : 5);
+            updateTransform();
+        }, { passive: false });
+
+        function updateTransform() {
+            heart.style.transform = `rotate(${rotation}deg)`;
+        }
+    </script>
 </body>
 </html>
