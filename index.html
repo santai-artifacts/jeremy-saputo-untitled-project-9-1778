@@ -24,10 +24,47 @@
             bottom: 20px;
             left: 20px;
             font-size: 48px;
+            cursor: grab;
+            user-select: none;
+            transition: filter 0.1s;
+        }
+
+        .heart:hover {
+            filter: drop-shadow(0 0 8px rgba(255, 0, 0, 0.5));
+        }
+
+        .heart:active {
+            cursor: grabbing;
         }
     </style>
 </head>
 <body>
     <div class="heart">❤️</div>
+
+    <script>
+        const heart = document.querySelector('.heart');
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        heart.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            const rect = heart.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                heart.style.left = (e.clientX - offsetX) + 'px';
+                heart.style.top = (e.clientY - offsetY) + 'px';
+                heart.style.bottom = 'auto';
+            }
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+    </script>
 </body>
 </html>
